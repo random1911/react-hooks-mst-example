@@ -1,0 +1,11 @@
+@import "../../styles/theme";
+
+.loader-overlay {
+  z-index: 10000;
+  position: absolute;
+  @include fillContainer(0);
+  background: $bodyBg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

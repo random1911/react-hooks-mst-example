@@ -1,0 +1,145 @@
+@import "../../styles/theme";
+
+@keyframes modalIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes modalOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+}
+
+.modal-holder {
+  position: fixed;
+  @include fillContainer(0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.modal-overlay {
+  position: absolute;
+  @include fillContainer(0);
+  background: $overlayBg;
+}
+.modal {
+  width: 100%;
+  max-height: calc(
+    100vh - 50px
+  ); // damn address bar is not included to VH and that's awful
+  max-width: 400px;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.24), 0 16px 24px 2px rgba(0, 0, 0, 0.05),
+    0 6px 30px 5px rgba(0, 0, 0, 0.06), 0 8px 10px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: $contentBg;
+  position: relative;
+  transform: translateY(-100px);
+  opacity: 0;
+  animation: modalIn 0.2s ease-in-out forwards;
+  &_is_closing {
+    animation: modalOut 0.2s ease-in-out forwards;
+  }
+  @media (min-width: $screensDesktopSm) {
+    max-height: 100vh;
+  }
+}
+
+.modal-form {
+  flex: 0 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.modal-padding {
+  padding: 16px;
+}
+
+.modal-header {
+  align-items: center;
+  overflow: hidden;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 1px 0 0;
+  border-bottom: 1px solid;
+  &__caption {
+    padding: 0 16px;
+    @include textOverflow();
+    flex: 1;
+  }
+  &__close-button {
+    @include crossButtonNormal();
+    margin-right: 16px;
+    position: relative;
+    &:hover {
+      background: $gray200;
+    }
+    &::before,
+    &::after {
+      @include crossButtonPseudoCommon();
+      background: $gray500;
+    }
+    &::before {
+      transform: rotate(-45deg);
+    }
+    &::after {
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.modal-content {
+  flex: 0 1 auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-footer {
+  padding: 8px 16px 7px;
+  border-top: 1px solid;
+  display: flex;
+  justify-content: flex-end;
+  &__left,
+  &__right {
+    display: grid;
+    grid-gap: 10px;
+    gap: 10px;
+    justify-content: end;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+  }
+  &__left {
+    margin-right: 24px;
+    flex: none;
+  }
+  &__right {
+    flex: 1;
+  }
+}
+
+.modal-header,
+.modal-footer {
+  flex: none;
+  display: flex;
+  height: 48px;
+  background: $gray100;
+  border-color: $gray200;
+}

@@ -1,0 +1,52 @@
+@import "../../styles/theme";
+
+.search-bar {
+  display: block;
+  position: relative;
+  max-width: 200px;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    @include square(20px);
+    background: url(../assets/search.svg) no-repeat center;
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+  }
+  &:focus-within::before {
+    opacity: 0.9;
+  }
+  & .text-input {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  &__clear {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    @include crossButtonNormal();
+    background: $gray100;
+    &::before,
+    &::after {
+      @include crossButtonPseudoCommon();
+      background: $gray400;
+    }
+    &::before {
+      transform: rotate(45deg);
+    }
+    &::after {
+      transform: rotate(-45deg);
+    }
+    &:hover {
+      background: $gray200;
+      &::before,
+      &::after {
+        background: $gray600;
+      }
+    }
+  }
+}

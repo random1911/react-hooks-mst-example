@@ -1,0 +1,111 @@
+@import "../../styles/theme";
+
+@keyframes notificationAppear {
+  0% {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notificationDisappear {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(110%);
+  }
+}
+
+.notifications-list {
+  position: fixed;
+  z-index: 9999;
+  top: 16px;
+  right: 16px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.notification {
+  max-width: 80vw;
+  margin: 0 0 8px;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  background: $contentBg;
+  padding: 8px;
+  position: relative;
+  color: $gray600;
+  border-radius: 3px;
+  opacity: 0;
+  transform: translateX(110%);
+  animation: notificationAppear 0.3s ease-in-out forwards;
+  &_is_hidden {
+    animation: notificationDisappear 0.3s ease-in-out forwards;
+  }
+  &_success {
+    border-color: $green400;
+  }
+  &_error {
+    border-color: $red;
+  }
+  &__icon {
+    flex: none;
+    @include square(24px);
+    position: relative;
+    border-radius: 50%;
+    border: 1px solid;
+    &_success {
+      border-color: $green400;
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        background: $green400;
+        width: 2px;
+        left: 9px;
+        transform-origin: bottom center;
+      }
+      &::before {
+        height: 8px;
+        bottom: 4px;
+        transform: rotate(-40deg);
+      }
+      &::after {
+        height: 12px;
+        bottom: 5px;
+        transform: rotate(33deg);
+      }
+    }
+    &_error {
+      border-color: $red;
+      &:before,
+      &:after {
+        @include crossButtonPseudoCommon();
+        background: $red;
+      }
+      &:before {
+        transform: rotate(45deg);
+      }
+      &:after {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+  &__text {
+    padding: 0;
+    margin: 0 8px;
+    flex: 0 1 auto;
+    line-height: 1.4;
+  }
+  @media (min-width: $screensTabletMd) {
+    max-width: 400px;
+  }
+}

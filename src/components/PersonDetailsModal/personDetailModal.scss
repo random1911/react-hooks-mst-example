@@ -1,0 +1,53 @@
+@import "../../styles/theme";
+
+.person-details {
+  padding: 0 16px;
+  &__name {
+    padding: 0;
+    margin: 16px 0 0;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  &__phone {
+    padding: 0;
+    margin: 0;
+    color: $green400;
+    font-size: 18px;
+  }
+  &__top {
+    padding: 24px 0 24px;
+    text-align: center;
+    border-bottom: 1px solid $gray200;
+  }
+  &__bottom {
+    padding: 8px 0 24px;
+  }
+}
+
+.person-additional-details {
+  &__label,
+  &__value {
+    font-size: 14px;
+    color: $gray500;
+    word-break: break-word;
+  }
+  &__label {
+    font-weight: bold;
+  }
+  &__value {
+    margin: 0 0 8px;
+  }
+  @media (min-width: $screensPhoneMd) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 0;
+    &__label {
+      text-align: right;
+      padding: 4px 16px;
+    }
+    &__value {
+      padding: 4px 8px;
+      margin: 0;
+    }
+  }
+}

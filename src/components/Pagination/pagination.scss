@@ -1,0 +1,135 @@
+@import "../../styles/theme";
+
+.pagination {
+  display: flex;
+  align-items: center;
+  user-select: text;
+  opacity: 1;
+  animation: fadeIn 0.2s ease-in-out forwards;
+  &__list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+  }
+  &__item {
+    flex: none;
+    flex-wrap: wrap;
+    display: none;
+    &:not(:first-of-type) {
+      margin-left: -1px;
+    }
+    &_is_active,
+    &_is_next,
+    &_is_prev {
+      display: block;
+    }
+    @media (min-width: $screensTabletLg) {
+      display: block;
+    }
+  }
+  &__button {
+    min-width: 32px;
+    height: 32px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    background: $contentBg;
+    border: 1px solid $gray300;
+    color: $gray500;
+    user-select: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    @media (min-width: $screensTabletLg) {
+      display: block;
+    }
+    &_is_next,
+    &_is_prev {
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        background: $gray500;
+        width: 2px;
+        height: 8px;
+        left: 50%;
+        transform-origin: center;
+      }
+    }
+    &_is_next,
+    &_is_prev {
+      &::before {
+        top: 9px;
+      }
+      &::after {
+        bottom: 9px;
+      }
+    }
+    &_is_prev {
+      &::before,
+      &::after {
+        margin-left: -2px;
+      }
+      &::before {
+        transform: rotate(44deg);
+      }
+      &::after {
+        transform: rotate(-44deg);
+      }
+    }
+    &_is_next {
+      &::before,
+      &::after {
+        margin-left: -1px;
+      }
+      &::before {
+        transform: rotate(-44deg);
+      }
+      &::after {
+        transform: rotate(44deg);
+      }
+    }
+    &:first-of-type & {
+      border-radius: 2px 0 0 2px;
+    }
+    &:last-of-type & {
+      border-radius: 0 2px 2px 0;
+    }
+    &:hover {
+      background: $gray100;
+    }
+    &:active {
+      background: $gray200;
+      box-shadow: inset 0 1px 2px rgba(38, 41, 44, 0.12);
+    }
+    &:focus {
+      position: relative;
+      z-index: 3;
+    }
+    &_is_active {
+      cursor: default;
+      box-shadow: inset 0 1px 2px rgba(38, 41, 44, 0.12);
+      &,
+      &:hover {
+        background: $gray200;
+      }
+    }
+    &:disabled {
+      pointer-events: none;
+      background: $gray100;
+      color: $gray300;
+      cursor: default;
+      &::before,
+      &::after {
+        background: $gray300;
+      }
+    }
+  }
+  &__total {
+    margin: 0 0 0 8px;
+    padding: 0;
+    white-space: nowrap;
+  }
+}

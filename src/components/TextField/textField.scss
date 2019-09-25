@@ -1,0 +1,37 @@
+@import "../../styles/theme";
+
+.text-input {
+  @include inputNormal();
+  width: 100%;
+  display: inline-block;
+  vertical-align: top;
+  &_is_invalid {
+    @include inputError();
+  }
+  &:disabled {
+    @include inputDisabled();
+  }
+  &:focus {
+    @include inputFocus();
+  }
+  &_organization {
+    padding-left: 32px;
+    background-image: url(../assets/oranization-icon.svg);
+    background-repeat: no-repeat;
+    background-position: 8px center;
+  }
+}
+
+.text-field {
+  margin: 0 0 5px;
+  display: block;
+  &__label {
+    @include labelStyle();
+  }
+  &__input {
+    //
+  }
+  &__error {
+    @include errorText();
+  }
+}

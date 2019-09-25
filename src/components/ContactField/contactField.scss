@@ -1,0 +1,67 @@
+@import "../../styles/theme";
+
+.contact-field {
+  margin: 0 0 5px;
+  &__label {
+    @include labelStyle();
+  }
+  &__add {
+    display: inline-block;
+    position: relative;
+    border: none;
+    background: transparent;
+    color: $deepBlue;
+    padding: 0;
+    cursor: pointer;
+  }
+  &__add:hover &__add-label {
+    text-decoration: underline;
+  }
+}
+
+.contact-field-row {
+  margin: 0 0 10px;
+  &__inner {
+    display: flex;
+    align-items: center;
+  }
+  & .text-input {
+    border-radius: 2px 0 0 2px;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+    &:focus {
+      position: relative;
+      z-index: 3;
+    }
+  }
+  & .dropdown-button-container {
+    flex: 0 1 110px;
+    margin-left: -1px;
+    height: 32px;
+  }
+  & .dropdown-toggle-button {
+    border-radius: 0 2px 2px 0;
+    &:focus,
+    &_is_open {
+      position: relative;
+      z-index: 3;
+    }
+  }
+  &__error {
+    @include errorText();
+  }
+  &__remove {
+    flex: none;
+    margin-left: 4px;
+    @include square(24px);
+    border: none;
+    background: transparent url(../assets/trash-bin.svg) no-repeat center;
+    background-size: 16px;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    &:hover {
+      background-color: $gray200;
+    }
+  }
+}

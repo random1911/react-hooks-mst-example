@@ -1,0 +1,45 @@
+@import "../../styles/theme";
+
+.warning-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (min-width: $screensTabletMd) {
+    flex-direction: row;
+  }
+  &__image {
+    @include square(100px);
+    position: relative;
+    text-align: center;
+    flex: none;
+    &:before {
+      content: "";
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -40px);
+      position: absolute;
+      width: 0;
+      height: 0;
+      border: 50px solid transparent;
+      border-bottom: 80px solid $orange;
+    }
+    &:after {
+      content: "!";
+      font-size: 50px;
+      line-height: 1;
+      font-weight: bold;
+      color: $gray700;
+      position: relative;
+      display: block;
+      margin: 30px 0 0;
+    }
+  }
+  &__text {
+    flex: none;
+    @media (min-width: $screensTabletMd) {
+      flex: 1;
+      margin-left: 24px;
+    }
+  }
+}

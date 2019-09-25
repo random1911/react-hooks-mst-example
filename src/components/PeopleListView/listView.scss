@@ -1,0 +1,73 @@
+@import "../../styles/theme";
+
+.view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.view-header {
+  flex: none;
+  background: $contentBg;
+  border-bottom: 1px solid $gray400;
+  padding: 8px 16px;
+}
+.view-caption {
+  padding: 0;
+  margin: 0;
+  font: 600 18px/24px $fonts;
+  color: $gray700;
+}
+.view-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  &_is_empty {
+    align-items: center;
+    justify-content: center;
+  }
+  &__empty-message {
+    font-weight: bold;
+  }
+  &__list {
+    margin: 0;
+    padding: 16px 16px 8px;
+    list-style: none;
+  }
+  &__list-placeholder {
+    position: relative;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.toolbar {
+  background: $gray100;
+  border-bottom: 1px solid $gray200;
+  padding: 8px 16px;
+  line-height: 0;
+  @media (min-width: $screensTabletSm) {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+  }
+  &__left {
+    display: grid;
+    gap: 16px;
+    justify-content: start;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    flex: none;
+  }
+  &__right {
+    margin: 8px 0 0;
+    @media (min-width: $screensTabletSm) {
+      margin: 0 0 0 16px;
+      flex: 0 1 auto;
+    }
+  }
+}

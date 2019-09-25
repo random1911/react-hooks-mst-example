@@ -1,0 +1,126 @@
+$green500: #2e7d32;
+$green400: #43a047;
+$green300: #66bb6a;
+$green200: #a5d6a7;
+
+$gray700: #263238;
+$gray600: #455a64;
+$gray500: #607d8b;
+$gray400: #78909c;
+$gray300: #90a4ae;
+$gray200: #b0bec5;
+$gray100: #eceff1;
+
+$blue50: #e3f2fd;
+$blue300: #64b5f6;
+
+$deepBlue: #1565c0;
+$red: #d32f2f;
+$orange: #fdd835;
+$bodyBg: $gray100;
+$contentBg: #fff;
+$overlayBg: rgba(0, 0, 0, 0.3);
+$fonts: "Open Sans", "Helvetica Neue", "Segoe UI", "Roboto", sans-serif;
+
+$screensPhoneSm: 320px;
+$screensPhoneMd: 360px;
+$screensTabletSm: 600px;
+$screensTabletMd: 764px;
+$screensTabletLg: 960px;
+$screensDesktopSm: 1200px;
+$screensDesktopMd: 1420px;
+$screensDesktopLg: 1940px;
+
+@mixin square($size) {
+  width: $size;
+  height: $size;
+}
+
+@mixin textOverflow() {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin fillContainer($offset) {
+  left: $offset;
+  right: $offset;
+  top: $offset;
+  bottom: $offset;
+}
+
+@mixin labelStyle() {
+  display: block;
+  padding: 0 0 2px;
+  line-height: 20px;
+  color: $gray500;
+}
+
+@mixin errorText() {
+  color: $red;
+  font-size: 80%;
+  padding: 0;
+  margin: 0;
+}
+
+@mixin inputNormal() {
+  height: 32px;
+  font-family: inherit;
+  border: 1px solid $gray300;
+  background: $contentBg;
+  padding: 0 8px;
+  font-size: 15px;
+  color: $gray700;
+  margin: 0;
+  transition: border-color 0.2s ease-in-out;
+  border-radius: 3px;
+}
+@mixin inputError() {
+  border-color: $red;
+}
+@mixin inputDisabled() {
+  background: $gray200;
+  border-color: $gray400;
+  color: $gray500;
+  transition: none;
+}
+@mixin inputFocus() {
+  outline: none;
+  border-color: $deepBlue;
+}
+
+@mixin crossButtonNormal() {
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+  border: none;
+  @include square(24px);
+  transition: background-color 0.2s ease-in-out;
+}
+@mixin crossButtonPseudoCommon() {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

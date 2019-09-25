@@ -1,0 +1,84 @@
+@import "../../styles/theme";
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  position: relative;
+  vertical-align: top;
+  background: $contentBg;
+  color: $gray700;
+  box-shadow: inset 0 0 0 1px #cbcccd, 0 1px 2px rgba(38, 41, 44, 0.08);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  margin: 0;
+  padding: 4px 16px;
+  font-size: inherit;
+  height: 32px;
+  min-width: 32px;
+  user-select: none;
+  transition: background-color 0.2s ease-in-out;
+  &_only_icon {
+    padding: 4px;
+  }
+  &_is_pending::before {
+    content: "";
+    position: absolute;
+    @include square(20px);
+    border-radius: 50%;
+    border: 2px solid $gray400;
+    border-right-color: $gray700;
+    border-top-color: $gray700;
+    animation: spin 1s linear infinite;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+  }
+  &:disabled {
+    pointer-events: none;
+    background: $gray100;
+    cursor: default;
+  }
+  &:hover {
+    background-color: $gray100;
+  }
+  &:active {
+    background: $gray200;
+    box-shadow: inset 0 0 0 1px #cbcccd, inset 0 1px 2px rgba(38, 41, 44, 0.16);
+  }
+  &_primary {
+    background-color: $green400;
+    color: $contentBg;
+    border-color: transparent;
+    &:disabled {
+      background: $green200;
+      box-shadow: none;
+    }
+    &:hover {
+      background-color: $green300;
+    }
+    &:active {
+      background-color: $green500;
+    }
+  }
+  &__icon {
+    @include square(24px);
+    background: no-repeat center;
+    &_delete {
+      background-image: url(../assets/trash-bin.svg);
+      background-size: 16px;
+    }
+  }
+  &:disabled &__text,
+  &:disabled &__icon {
+    opacity: 0.32;
+  }
+  &_primary:disabled &__text {
+    opacity: 1;
+  }
+  &_is_pending:disabled &__text {
+    opacity: 0;
+  }
+}

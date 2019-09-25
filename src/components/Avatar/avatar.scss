@@ -1,0 +1,43 @@
+@import "../../styles/theme";
+
+.avatar {
+  display: inline-flex;
+  vertical-align: top;
+  @include square(40px);
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  background: $blue50;
+  color: $blue300;
+  user-select: none;
+  &,
+  &__image {
+    @include square(40px);
+    &_is_large {
+      @include square(100px);
+    }
+  }
+  &__letters {
+    position: absolute;
+    @include fillContainer(0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  &_is_large &__letters {
+    font-size: 50px;
+  }
+  &__image {
+    position: relative;
+    z-index: 2;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    &_is_loaded {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}

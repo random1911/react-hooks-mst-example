@@ -1,0 +1,13 @@
+@import "../../styles/theme";
+
+.spinner {
+  @include square(80px);
+  border-radius: 50%;
+  border: 2px solid $gray400;
+  border-right-color: $green300;
+  border-top-color: $green300;
+  animation: spin 1s linear infinite;
+  &_small {
+    @include square(40px);
+  }
+}

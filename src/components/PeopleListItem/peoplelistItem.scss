@@ -1,0 +1,101 @@
+@import "../../styles/theme";
+
+$hoverTransition: background-color 0.2s ease-in-out;
+
+.people-list-item {
+  position: relative;
+  list-style: none;
+  margin: 0 0 8px;
+  display: flex;
+  border: 1px solid $gray500;
+  &__drag {
+    width: 20px;
+    flex: none;
+    background: $gray400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: $hoverTransition;
+    opacity: 0;
+    animation: fadeIn 0.2s ease-in-out forwards;
+    &_is_hidden {
+      display: none;
+    }
+    &:focus {
+      position: relative;
+    }
+    &::after {
+      content: "";
+      width: 12px;
+      height: 35px;
+      background-image: radial-gradient($gray600 2px, transparent 2px);
+      background-size: 6px 6px;
+      background-position: 0 0;
+      background-repeat: repeat;
+    }
+  }
+  &_is_dragging &__drag,
+  &__drag:hover {
+    background: $gray500;
+    &::after {
+      background-image: radial-gradient($gray700 2px, transparent 2px);
+    }
+  }
+  &__button {
+    background: $contentBg;
+    padding: 16px 24px 16px 16px;
+    display: flex;
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    transition: $hoverTransition;
+    overflow: hidden;
+    &_is_only {
+      padding-left: 36px;
+    }
+    &:focus {
+      position: relative;
+    }
+  }
+  &_is_dragging &__button,
+  &__button:hover {
+    background: $gray200;
+  }
+  &__left {
+    flex: 1;
+    overflow: hidden;
+  }
+  &__right {
+    flex: none;
+    margin-left: 16px;
+  }
+}
+
+.people-list-item-name,
+.people-list-item-org {
+  @include textOverflow;
+  margin: 0;
+}
+
+.people-list-item-name {
+  font-weight: bold;
+  font-size: 16px;
+  &__matched-search {
+    background: $orange;
+  }
+}
+
+.people-list-item-org {
+  padding-left: 20px;
+  position: relative;
+  font-size: 14px;
+  line-height: 18px;
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    @include square(16px);
+    background: url(../assets/oranization-icon.svg) no-repeat center;
+  }
+}
