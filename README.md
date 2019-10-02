@@ -18,7 +18,7 @@ Yes, but without connection to API it is pointless.
 
 Original API has a limited trial period and cannot be used now anyway.
 
-I have plans to implement some mock API in the future to make seen UX in action, but without actual data, you can see the only a pale shadow of it.
+Currently I work on [own API implementation](https://github.com/random1911/express-mongoose-api) to make seen UX in action, but it will take some time.
 
 If you still want to run this app, follow these steps:
 
