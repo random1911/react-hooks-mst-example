@@ -1,11 +1,13 @@
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-export const dashToCamel = (str: string) =>
-  str
+export const dashToCamel = (str: string) => {
+  if (str === "_id") return str;
+  return str
     .split("_")
     .map((part, i) => (i === 0 ? part : capitalize(part)))
     .join("");
+};
 
 export const camelToDash = (str: string) =>
   str.replace(/([A-Z])/g, g => {

@@ -31,7 +31,7 @@ import { IWarningModelSnapshotIn, WARNING_ACTIONS } from "./WarningModel";
 import { ChangeEvent } from "react";
 
 interface IPersonChangeProps {
-  id?: number;
+  id?: string;
   isEdit: boolean;
   body: IPersonRequestBody;
 }
@@ -125,7 +125,7 @@ const PeopleList = types
         searchStringIgnoreCase(self.searchQuery, item.name)
       );
     },
-    get itemsByQueryIds(): number[] {
+    get itemsByQueryIds(): string[] {
       return this.allItemsByQuery.map(item => item.id);
     },
     get totalSearchResult(): IPerson[] {
@@ -161,7 +161,7 @@ const PeopleList = types
     });
 
     // detail dialog related stuff
-    const setSelectedPerson = (id: number) => {
+    const setSelectedPerson = (id: string) => {
       try {
         // normally identifiers in a MobxStateTree is a strings
         // @ts-ignore
@@ -176,7 +176,7 @@ const PeopleList = types
     const clearSelectedPerson = () => {
       self.selectedPerson = undefined;
     };
-    const showPersonDetails = (id: number) => {
+    const showPersonDetails = (id: string) => {
       setSelectedPerson(id);
       self.store.ui.openModal(PERSON_DETAILS_MODAL_ID);
     };
@@ -228,11 +228,12 @@ const PeopleList = types
         });
         if (response && response.ok) {
           const json = yield response.json();
-          const { data } = formatKeys(json);
-          const formattedData = data.map((item: any) =>
-            renameCustomKeysFromApi(item, customKeys)
-          );
-          return formattedData;
+          // const { persons, count } = formatKeys(json);
+          // TODO: delete renameCustomKeysFromApi, don't need it now
+          // const formattedPersons = persons.map((item: any) =>
+          //   renameCustomKeysFromApi(item, customKeys)
+          // );
+          return formatKeys(json);
         }
       } catch (e) {
         if (e.code !== 20) {
@@ -250,7 +251,10 @@ const PeopleList = types
       const listData = yield getListData(start, limit);
       setLoadingListState(false);
       if (!listData) return;
-      addListCache(listData);
+      const { persons, count } = listData;
+      setTotalCount(count);
+      console.log(persons);
+      addListCache(persons);
     });
     const clearNextPages = () => {
       const pagesToSave = self.cache.filter(
@@ -267,7 +271,7 @@ const PeopleList = types
 
     // drag and drop
 
-    const sendReorderRequest = (personId: number, newOrder: number) => {
+    const sendReorderRequest = (personId: string, newOrder: number) => {
       const endpoint = `/persons/${personId}`;
       const body = { [customKeys.orderingId]: newOrder };
       return apiRequest({ endpoint, method: "PUT", body });
@@ -321,7 +325,7 @@ const PeopleList = types
     // edit / add / delete person actions
 
     const changeSinglePersonInList = (
-      id: number,
+      id: string,
       snapshot: IPersonSnapshotIn
     ) => {
       const person = self.list.find(person => person.id === id);
@@ -380,7 +384,7 @@ const PeopleList = types
         groups,
         id,
         assistant,
-        orgId
+        organizationInfo
       } = self.selectedPerson;
       const snap: IEditPersonSnapshotIn = {
         isEditMode: true,
@@ -388,8 +392,8 @@ const PeopleList = types
         caption: `Edit person: ${name}`,
         orderingId
       };
-      if (orgId && orgId.value) {
-        snap.organization = `${orgId.value}`;
+      if (organizationInfo && organizationInfo.value) {
+        snap.organization = `${organizationInfo.value}`;
       }
       self.editPerson = snap as IEditPerson;
       const values: IEditPersonValues = {
@@ -398,9 +402,9 @@ const PeopleList = types
         assistant
       };
       self.editPerson.setValues(values);
-      const email = getSnapshot(self.selectedPerson.email);
+      const email = getSnapshot(self.selectedPerson.emails);
       self.editPerson.setEmails(email as IContactValues[]);
-      const phone = getSnapshot(self.selectedPerson.phone);
+      const phone = getSnapshot(self.selectedPerson.phones);
       self.editPerson.setPhones(phone as IContactValues[]);
     };
     const openEditPersonModal = (isEditMode: boolean = false) => {
@@ -414,7 +418,7 @@ const PeopleList = types
     const setPendingDelete = (status: boolean) => {
       self.pendingDelete = status;
     };
-    const sendDeletePersonRequest = (personId: number) => {
+    const sendDeletePersonRequest = (personId: string) => {
       const endpoint = `/persons/${personId}`;
       return apiRequest({ endpoint, method: "DELETE" });
     };
@@ -523,19 +527,17 @@ const PeopleList = types
     const convertSearchResultToPerson = (
       searchResultObject: any
     ): IPersonSnapshotIn => {
+      // TODO: do something
       const { id, name, orgName, picture } = searchResultObject;
       const mapped: IPersonSnapshotIn = {
         id,
         name,
-        orgId: orgName
+        organizationInfo: orgName
           ? {
               name: orgName
             }
           : undefined,
-        pictureId:
-          picture && picture.url
-            ? { pictures: { "512": picture.url, "128": picture.url } }
-            : undefined,
+        pictureId: picture,
         incompleteData: true
       };
       return mapped;
@@ -589,7 +591,7 @@ const PeopleList = types
 
     // life-cycle hook
     const afterAttach = () => {
-      updateTotalCount();
+      // updateTotalCount(); TODO: DEL
       getList();
     };
 

@@ -123,7 +123,7 @@ const PersonDetailModalController: FC = () => {
   if (!peopleList.selectedPerson) return null;
   const {
     name,
-    largeAvatar,
+    pictureId,
     primaryEmail,
     primaryPhone,
     assistant,
@@ -145,7 +145,7 @@ const PersonDetailModalController: FC = () => {
       assistant={assistant}
       email={primaryEmail}
       organization={organization}
-      avatarUrl={largeAvatar}
+      avatarUrl={pictureId}
       groups={groups}
       phone={primaryPhone}
       additionalEmails={additionalEmails}

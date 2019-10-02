@@ -71,7 +71,7 @@ const EditPerson = types
   .model("EditPersonModel", {
     isEditMode: false,
     caption: "Add person",
-    id: types.maybe(types.number),
+    id: types.maybe(types.string),
     orderingId: types.maybe(types.number),
     name: types.optional(Input, nameInput),
     organization: DEFAULT_ORG_OPTION.value,
