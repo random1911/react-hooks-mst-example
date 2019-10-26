@@ -9,12 +9,7 @@ import {
   types
 } from "mobx-state-tree";
 import { PERSON_DETAILS_MODAL_ID } from "../components/PersonDetailsModal/PersonDetailsModal";
-import {
-  formatKeys,
-  searchStringIgnoreCase,
-  renameCustomKeysFromApi,
-  renameCustomKeysToApi
-} from "../utils";
+import { formatKeys, searchStringIgnoreCase } from "../utils";
 import { EDIT_PERSON_MODAL_ID } from "../components/EditPersonModal/EditPersonModal";
 import { IStore } from "./main";
 import Person, { customKeys, IPerson, IPersonSnapshotIn } from "./Person";
@@ -163,9 +158,7 @@ const PeopleList = types
     // detail dialog related stuff
     const setSelectedPerson = (id: string) => {
       try {
-        // normally identifiers in a MobxStateTree is a strings
-        // @ts-ignore
-        self.selectedPerson = id;
+        self.selectedPerson = (id as unknown) as IPerson;
       } catch (e) {
         console.error(e);
         self.store.ui.addErrorNotification(
@@ -228,11 +221,6 @@ const PeopleList = types
         });
         if (response && response.ok) {
           const json = yield response.json();
-          // const { persons, count } = formatKeys(json);
-          // TODO: delete renameCustomKeysFromApi, don't need it now
-          // const formattedPersons = persons.map((item: any) =>
-          //   renameCustomKeysFromApi(item, customKeys)
-          // );
           return formatKeys(json);
         }
       } catch (e) {
@@ -253,7 +241,6 @@ const PeopleList = types
       if (!listData) return;
       const { persons, count } = listData;
       setTotalCount(count);
-      console.log(persons);
       addListCache(persons);
     });
     const clearNextPages = () => {
@@ -366,8 +353,8 @@ const PeopleList = types
     }: IPersonChangeProps) {
       const method = isEdit ? "PUT" : "POST";
       const endpoint = isEdit ? `/persons/${id}` : "/persons";
-      const renamedBody = renameCustomKeysToApi(body, customKeys);
-      const formattedBody = formatKeys(renamedBody, false);
+      // const renamedBody = renameCustomKeysToApi(body, customKeys);
+      const formattedBody = formatKeys(body, false);
       return yield apiRequest({ endpoint, method, body: formattedBody });
     });
     const setEditPersonModel = (isEditMode: boolean) => {
@@ -482,8 +469,7 @@ const PeopleList = types
       try {
         const json = yield response.json();
         const data = formatKeys(json.data);
-        const formattedData = renameCustomKeysFromApi(data, customKeys);
-        changeSinglePersonInList(id, formattedData);
+        changeSinglePersonInList(id, data);
         self.store.ui.addSuccessNotification("Person changed");
         closeEditPersonModal();
       } catch (e) {
@@ -504,10 +490,9 @@ const PeopleList = types
       }
       try {
         const json = yield response.json();
-        const data = formatKeys(json.data);
-        const formattedData = renameCustomKeysFromApi(data, customKeys);
+        const data = formatKeys(json);
         if (self.shouldAddToEnd) {
-          addSinglePersonToList(formattedData);
+          addSinglePersonToList(data);
           setTotalCount(self.totalCount + 1);
         } else {
           setTotalCount(self.totalCount + 1);
@@ -592,6 +577,7 @@ const PeopleList = types
     // life-cycle hook
     const afterAttach = () => {
       // updateTotalCount(); TODO: DEL
+      // TODO: handle case when in empty list added new person, seems like bug there
       getList();
     };
 

@@ -11,7 +11,7 @@ const PHONE_LABELS = [DEFAULT_LABEL, "home", "mobile", "other"];
 const EMAIL_LABELS = [DEFAULT_LABEL, "home", "other"];
 
 const INPUT_KEYS = ["name", "groups", "assistant"];
-const CONTACTS_KEYS = ["email", "phone"];
+const CONTACTS_KEYS = ["emails", "phones"];
 const ALL_FIELDS_KEYS = [...INPUT_KEYS, ...CONTACTS_KEYS];
 
 export interface IEditPersonValues {
@@ -32,8 +32,8 @@ export interface IPersonRequestBody {
   location?: string;
   groups?: string;
   assistant?: string;
-  email?: IContactValues[];
-  phone?: IContactValues[];
+  emails?: IContactValues[];
+  phones?: IContactValues[];
 }
 
 const nameInput = {
@@ -77,8 +77,8 @@ const EditPerson = types
     organization: DEFAULT_ORG_OPTION.value,
     groups: types.optional(Input, groupsInput),
     assistant: types.optional(Input, assistantInput),
-    email: types.optional(ContactModel, emailModel),
-    phone: types.optional(ContactModel, phoneModel),
+    emails: types.optional(ContactModel, emailModel),
+    phones: types.optional(ContactModel, phoneModel),
     isPending: false
   })
   .views(self => ({
@@ -134,7 +134,7 @@ const EditPerson = types
         }
       });
     };
-    const setContact = (model: "phone" | "email", list: IContactValues[]) => {
+    const setContact = (model: "phones" | "emails", list: IContactValues[]) => {
       const snapshot: any = list.map(
         ({ value, label }: IContactValues, index) => ({
           id: index,
@@ -145,10 +145,10 @@ const EditPerson = types
       self[model].list = snapshot;
     };
     const setPhones = (list: IContactValues[]) => {
-      setContact("phone", list);
+      setContact("phones", list);
     };
     const setEmails = (list: IContactValues[]) => {
-      setContact("email", list);
+      setContact("emails", list);
     };
     const showCloseWarning = () => {
       const warning: IWarningModelSnapshotIn = {
@@ -187,7 +187,7 @@ const EditPerson = types
         }
       });
       if (self.organization !== DEFAULT_ORG_OPTION.value) {
-        data.orgId = parseInt(self.organization, 10);
+        data.organizationInfo = self.organization;
       }
       if (self.orderingId) {
         data.orderingId = self.orderingId;

@@ -158,8 +158,8 @@ const EditPersonModalController: FC = () => {
     organizationOptions,
     groups,
     assistant,
-    email,
-    phone,
+    emails,
+    phones,
     handleClose,
     isPending
   } = editPerson;
@@ -177,20 +177,20 @@ const EditPersonModalController: FC = () => {
       onGroupsChange={groups.onChange}
       assistant={assistant.value}
       onAssistantChange={assistant.onChange}
-      emailFieldLabel={email.fieldLabel}
+      emailFieldLabel={emails.fieldLabel}
       // @ts-ignore
-      emailList={email.list}
-      emailLabelOptions={email.formattedLabelOptions}
-      addEmail={email.addListItem}
-      removeEmail={email.removeListItem}
-      singleEmail={email.isSingle}
-      phoneFieldLabel={phone.fieldLabel}
+      emailList={emails.list}
+      emailLabelOptions={emails.formattedLabelOptions}
+      addEmail={emails.addListItem}
+      removeEmail={emails.removeListItem}
+      singleEmail={emails.isSingle}
+      phoneFieldLabel={phones.fieldLabel}
       // @ts-ignore
-      phoneList={phone.list}
-      phoneLabelOptions={phone.formattedLabelOptions}
-      addPhone={phone.addListItem}
-      removePhone={phone.removeListItem}
-      singlePhone={phone.isSingle}
+      phoneList={phones.list}
+      phoneLabelOptions={phones.formattedLabelOptions}
+      addPhone={phones.addListItem}
+      removePhone={phones.removeListItem}
+      singlePhone={phones.isSingle}
       onClose={handleClose}
       isPending={isPending}
     />
