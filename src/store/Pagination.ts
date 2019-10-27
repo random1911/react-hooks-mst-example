@@ -21,8 +21,14 @@ const Pagination = types
     get currentStartIndex(): number {
       return (self.currentPage - 1) * self.limit;
     },
+    get onTheFirstPage(): boolean {
+      return self.currentPage === 0;
+    },
     get onTheLastPage(): boolean {
       return self.currentPage === this.pagesCount;
+    },
+    get currentMaxCount(): number {
+      return self.currentPage * self.limit;
     }
   }))
   .actions(self => {

@@ -7,14 +7,8 @@ import {
   applySnapshot
 } from "mobx-state-tree";
 import { IStore } from "./main";
-import { formatKeys, renameCustomKeysFromApi } from "../utils";
+import { formatKeys } from "../utils";
 import apiRequest from "./apiRequest";
-
-export const customKeys: any = {
-  assistant: "e84ab1fc4ad4dd171c97287b2ad84ffe58baca1b",
-  groups: "7ec8f8dbc0d0c618cbfda94eb39b49b788357f32",
-  orderingId: "903f7c14f57c1095f7909192941f221f79cd3d71"
-};
 
 const OrganizationInfo = types.model("OrganizationInfoModel", {
   name: types.maybeNull(types.string),
@@ -90,7 +84,7 @@ const Person = types
       if (response && response.ok) {
         const json = yield response.json();
         const { data } = formatKeys(json);
-        return renameCustomKeysFromApi(data, customKeys);
+        return data;
       }
     });
     const updateSelf = (snapshot: IPersonSnapshotIn) => {

@@ -12,7 +12,7 @@ import { PERSON_DETAILS_MODAL_ID } from "../components/PersonDetailsModal/Person
 import { formatKeys, searchStringIgnoreCase } from "../utils";
 import { EDIT_PERSON_MODAL_ID } from "../components/EditPersonModal/EditPersonModal";
 import { IStore } from "./main";
-import Person, { customKeys, IPerson, IPersonSnapshotIn } from "./Person";
+import Person, { IPerson, IPersonSnapshotIn } from "./Person";
 import Pagination from "./Pagination";
 import EditPerson, {
   IContactValues,
@@ -125,6 +125,13 @@ const PeopleList = types
     },
     get totalSearchResult(): IPerson[] {
       return [...this.allItemsByQuery, ...self.searchResult];
+    },
+    get canFillCurrentFragment(): boolean {
+      return (
+        !self.pagination.onTheLastPage &&
+        !this.haveValidSearch &&
+        self.pagination.currentMaxCount < self.totalCount
+      );
     }
   }))
   .actions(self => {
@@ -206,14 +213,14 @@ const PeopleList = types
       }
     };
     const getListData = flow(function*(
-      start: number = 0,
+      from: number = 0,
       limit: number = self.pagination.limit
     ): any {
       getListController && getListController.abort();
       getListController = AbortController && new AbortController();
       const endpoint = "/persons";
       try {
-        const params = { sort: customKeys.orderingId, start, limit };
+        const params = { from, limit };
         const response = yield apiRequest({
           endpoint,
           params,
@@ -232,11 +239,11 @@ const PeopleList = types
       }
     });
     const getList = flow(function*(
-      start: number = 0,
+      from: number = 0,
       limit: number = self.pagination.limit
     ) {
       setLoadingListState(true);
-      const listData = yield getListData(start, limit);
+      const listData = yield getListData(from, limit);
       setLoadingListState(false);
       if (!listData) return;
       const { persons, count } = listData;
@@ -260,7 +267,7 @@ const PeopleList = types
 
     const sendReorderRequest = (personId: string, newOrder: number) => {
       const endpoint = `/persons/${personId}`;
-      const body = { [customKeys.orderingId]: newOrder };
+      const body = { orderingId: newOrder };
       return apiRequest({ endpoint, method: "PUT", body });
     };
     const onDragEnd = (sourceIndex: number, destinationIndex: number) => {
@@ -325,7 +332,7 @@ const PeopleList = types
     };
     const addSinglePersonToList = (person: IPersonSnapshotIn) => {
       try {
-        if (!self.currentListFragment) return;
+        if (!self.currentListFragment || !person) return;
         const newList = [...self.currentListFragment.content, person];
         applySnapshot(self.currentListFragment.content, newList);
       } catch (e) {
@@ -333,15 +340,15 @@ const PeopleList = types
       }
     };
     const getSinglePerson = flow(function*() {
-      const start = self.pagination.currentStartIndex + self.list.length;
+      const from = self.pagination.currentStartIndex + self.list.length;
       setLoadingAdditionalItemsState(true);
-      const res = yield getListData(start, 1);
+      const res = yield getListData(from, 1);
       setLoadingAdditionalItemsState(false);
       if (!res) {
         return;
       }
       try {
-        addSinglePersonToList(res[0]);
+        addSinglePersonToList(res.persons[0]);
       } catch (e) {
         console.error(e);
       }
@@ -438,13 +445,13 @@ const PeopleList = types
       } else {
         if (
           self.currentListFragment &&
-          self.currentListFragment.content.length > 1
+          self.currentListFragment.content.length
         ) {
           const filtered = self.currentListFragment.content.filter(
             item => item.id !== id
           );
           self.currentListFragment.updateList(filtered);
-          if (!self.pagination.onTheLastPage && !self.haveValidSearch) {
+          if (self.canFillCurrentFragment) {
             getSinglePerson();
           }
           clearNextPages();
@@ -468,7 +475,7 @@ const PeopleList = types
       }
       try {
         const json = yield response.json();
-        const data = formatKeys(json.data);
+        const data = formatKeys(json);
         changeSinglePersonInList(id, data);
         self.store.ui.addSuccessNotification("Person changed");
         closeEditPersonModal();
