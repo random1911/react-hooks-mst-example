@@ -11,9 +11,9 @@ import { formatKeys } from "../utils";
 import apiRequest from "./apiRequest";
 
 const OrganizationInfo = types.model("OrganizationInfoModel", {
-  name: types.maybeNull(types.string),
-  address: types.maybeNull(types.string),
-  value: types.maybeNull(types.number)
+  name: types.maybe(types.string),
+  address: types.maybe(types.string),
+  id: types.maybe(types.string)
 });
 const Contact = types.model("ContactModel", {
   label: types.maybe(types.string),

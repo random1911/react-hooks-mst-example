@@ -360,7 +360,6 @@ const PeopleList = types
     }: IPersonChangeProps) {
       const method = isEdit ? "PUT" : "POST";
       const endpoint = isEdit ? `/persons/${id}` : "/persons";
-      // const renamedBody = renameCustomKeysToApi(body, customKeys);
       const formattedBody = formatKeys(body, false);
       return yield apiRequest({ endpoint, method, body: formattedBody });
     });
@@ -377,6 +376,8 @@ const PeopleList = types
         orderingId,
         groups,
         id,
+        emails,
+        phones,
         assistant,
         organizationInfo
       } = self.selectedPerson;
@@ -386,8 +387,8 @@ const PeopleList = types
         caption: `Edit person: ${name}`,
         orderingId
       };
-      if (organizationInfo && organizationInfo.value) {
-        snap.organization = `${organizationInfo.value}`;
+      if (organizationInfo && organizationInfo.id) {
+        snap.organization = `${organizationInfo.id}`;
       }
       self.editPerson = snap as IEditPerson;
       const values: IEditPersonValues = {
@@ -396,10 +397,14 @@ const PeopleList = types
         assistant
       };
       self.editPerson.setValues(values);
-      const email = getSnapshot(self.selectedPerson.emails);
-      self.editPerson.setEmails(email as IContactValues[]);
-      const phone = getSnapshot(self.selectedPerson.phones);
-      self.editPerson.setPhones(phone as IContactValues[]);
+      if (emails.length) {
+        const email = getSnapshot(emails);
+        self.editPerson.setEmails(email as IContactValues[]);
+      }
+      if (phones.length) {
+        const phone = getSnapshot(phones);
+        self.editPerson.setPhones(phone as IContactValues[]);
+      }
     };
     const openEditPersonModal = (isEditMode: boolean = false) => {
       setEditPersonModel(isEditMode);
