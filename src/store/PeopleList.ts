@@ -140,32 +140,15 @@ const PeopleList = types
     let handleSearchTimeout: number | null = null;
 
     // total count
-    const getTotalCount = flow(function*() {
-      const endpoint = "/persons/summary";
-      try {
-        const response = yield apiRequest({ endpoint });
-        if (response && response.ok) {
-          const json = yield response.json();
-          const data = formatKeys(json.data);
-          return data;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
     const setTotalCount = (count: number) => {
       self.totalCount = count;
     };
-    const updateTotalCount = flow(function*() {
-      const res = yield getTotalCount();
-      if (!res) return;
-      setTotalCount(res.totalCount);
-    });
 
     // detail dialog related stuff
     const setSelectedPerson = (id: string) => {
       try {
-        self.selectedPerson = (id as unknown) as IPerson;
+        // @ts-ignore MST design issue
+        self.selectedPerson = id;
       } catch (e) {
         console.error(e);
         self.store.ui.addErrorNotification(
@@ -588,8 +571,6 @@ const PeopleList = types
 
     // life-cycle hook
     const afterAttach = () => {
-      // updateTotalCount(); TODO: DEL
-      // TODO: handle case when in empty list added new person, seems like bug there
       getList();
     };
 

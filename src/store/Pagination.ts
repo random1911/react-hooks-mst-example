@@ -16,6 +16,7 @@ const Pagination = types
       return this.peopleList.totalCount;
     },
     get pagesCount(): number {
+      if (this.total === 0) return 1;
       return Math.ceil(this.total / self.limit);
     },
     get currentStartIndex(): number {
