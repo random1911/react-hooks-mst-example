@@ -27,6 +27,8 @@ interface IProps {
   list: IPersonDumb[];
   onDragEnd: (sourceIndex: number, destinationIndex: number) => void;
   onAddClick: () => void;
+  clearWholeList: () => void;
+  restoreDefaultData: () => void;
   addLabel: string;
   isSearchMode?: boolean;
 }
@@ -79,7 +81,9 @@ export const ListView: FC<IProps & IPaginationProps & IToolbarSearchProps> = ({
   searchQuery,
   onSearchClear,
   onSearchInputChange,
-  isSearchMode
+  isSearchMode,
+  clearWholeList,
+  restoreDefaultData
 }) => {
   const handleDragEnd = ({ destination, source }: DropResult) => {
     if (!destination) return;
@@ -106,6 +110,12 @@ export const ListView: FC<IProps & IPaginationProps & IToolbarSearchProps> = ({
             onSearchClear={onSearchClear}
             searchQuery={searchQuery}
           />
+          <Button disabled={isLoadingList} onClick={clearWholeList}>
+            Clear all entries
+          </Button>
+          <Button disabled={isLoadingList} onClick={restoreDefaultData}>
+            Restore defaults
+          </Button>
         </div>
         <div className="toolbar__right">
           {!isSearchMode && (

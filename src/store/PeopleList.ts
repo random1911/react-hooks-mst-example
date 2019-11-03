@@ -569,6 +569,43 @@ const PeopleList = types
       setSearchResults([]);
     };
 
+    const requestClearList = flow(function*() {
+      const endpoint = `/delete-all-persons`;
+      return yield apiRequest({ endpoint, method: "DELETE" });
+    });
+
+    const reloadList = flow(function*() {
+      setCache([]);
+      yield getList();
+    });
+
+    const clearWholeList = flow(function*() {
+      setLoadingListState(true);
+      const result = yield requestClearList();
+      if (!result.ok) {
+        setLoadingListState(false);
+        self.store.ui.addErrorNotification("Unable to clear list");
+        return;
+      }
+      yield reloadList();
+    });
+
+    const requestRestoreDefault = flow(function*() {
+      const endpoint = `/restore-default-data`;
+      return yield apiRequest({ endpoint, method: "POST" });
+    });
+
+    const restoreDefaultData = flow(function*() {
+      setLoadingListState(true);
+      const result = yield requestRestoreDefault();
+      if (!result.ok) {
+        setLoadingListState(false);
+        self.store.ui.addErrorNotification("Unable to restore default data");
+        return;
+      }
+      yield reloadList();
+    });
+
     // life-cycle hook
     const afterAttach = () => {
       getList();
@@ -601,7 +638,9 @@ const PeopleList = types
         handleSearchTimeout = window.setTimeout(() => {
           this.performSearch();
         }, 200);
-      }
+      },
+      clearWholeList,
+      restoreDefaultData
     };
   });
 

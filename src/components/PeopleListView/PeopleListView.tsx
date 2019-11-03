@@ -18,7 +18,9 @@ const PeopleListView: FC = () => {
     searchQuery,
     handleSearchInputChange,
     clearSearchQuery,
-    haveValidSearch
+    haveValidSearch,
+    clearWholeList,
+    restoreDefaultData
   } = peopleList;
   const { total, goToPage, pagesCount, currentPage } = pagination;
   return (
@@ -39,6 +41,8 @@ const PeopleListView: FC = () => {
       searchQuery={searchQuery}
       onSearchInputChange={handleSearchInputChange}
       onSearchClear={clearSearchQuery}
+      clearWholeList={clearWholeList}
+      restoreDefaultData={restoreDefaultData}
     />
   );
 };
