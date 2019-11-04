@@ -23,6 +23,14 @@
   &_only_icon {
     padding: 4px;
   }
+  &_collapsible {
+    font-size: 0;
+    padding: 4px;
+    @media (min-width: $screensTabletLg) {
+      padding: 4px 16px 4px 6px;
+      font-size: inherit;
+    }
+  }
   &_is_pending::before {
     content: "";
     position: absolute;
@@ -42,7 +50,7 @@
     cursor: default;
   }
   &:hover {
-    background-color: $gray100;
+    background-color: $indigo50;
   }
   &:active {
     background: $gray200;
@@ -66,9 +74,12 @@
   &__icon {
     @include square(24px);
     background: no-repeat center;
+    background-size: 16px;
     &_delete {
       background-image: url(../assets/trash-bin.svg);
-      background-size: 16px;
+    }
+    &_restore {
+      background-image: url(../assets/restore.svg);
     }
   }
   &:disabled &__text,

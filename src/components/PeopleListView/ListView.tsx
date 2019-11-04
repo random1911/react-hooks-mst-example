@@ -110,10 +110,20 @@ export const ListView: FC<IProps & IPaginationProps & IToolbarSearchProps> = ({
             onSearchClear={onSearchClear}
             searchQuery={searchQuery}
           />
-          <Button disabled={isLoadingList} onClick={clearWholeList}>
-            Clear all entries
+          <Button
+            collapsible
+            icon="delete"
+            disabled={isLoadingList}
+            onClick={clearWholeList}
+          >
+            Clear all
           </Button>
-          <Button disabled={isLoadingList} onClick={restoreDefaultData}>
+          <Button
+            collapsible
+            icon="restore"
+            disabled={isLoadingList}
+            onClick={restoreDefaultData}
+          >
             Restore defaults
           </Button>
         </div>
