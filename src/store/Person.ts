@@ -7,57 +7,42 @@ import {
   applySnapshot
 } from "mobx-state-tree";
 import { IStore } from "./main";
-import { formatKeys, renameCustomKeysFromApi } from "../utils";
+import { formatKeys } from "../utils";
 import apiRequest from "./apiRequest";
 
-export const customKeys: any = {
-  assistant: "e84ab1fc4ad4dd171c97287b2ad84ffe58baca1b",
-  groups: "7ec8f8dbc0d0c618cbfda94eb39b49b788357f32",
-  orderingId: "903f7c14f57c1095f7909192941f221f79cd3d71"
-};
-
 const OrganizationInfo = types.model("OrganizationInfoModel", {
-  name: types.maybeNull(types.string),
-  address: types.maybeNull(types.string),
-  value: types.maybeNull(types.number)
+  name: types.maybe(types.string),
+  address: types.maybe(types.string),
+  id: types.maybe(types.string)
 });
 const Contact = types.model("ContactModel", {
   label: types.maybe(types.string),
-  value: types.maybe(types.string),
-  primary: false
+  value: types.maybe(types.string)
 });
 interface IContact extends Instance<typeof Contact> {}
 
-const PictureSizes = types.model("PictureSizesModel", {
-  128: types.string,
-  512: types.string
-});
-const Picture = types.model("PictureModel", {
-  pictures: PictureSizes
-});
 const getPrimaryContact = (source: IContact[]) => {
   if (!source.length) return undefined;
-  const primary = source.find(item => item.primary);
-  return primary && primary.value;
+  return source[0].value;
 };
 const getAdditionalContacts = (source: IContact[]) => {
   if (!source.length) return undefined;
-  const notMain = source.filter(item => !item.primary);
+  const notMain = source.slice(1, source.length);
   if (!notMain.length) return undefined;
   return notMain.map(item => item.value).join(", ");
 };
 
 const Person = types
   .model("PersonModel", {
-    id: types.identifierNumber,
+    id: types.identifier,
     name: types.string,
     assistant: types.maybe(types.string),
     groups: types.maybe(types.string),
     orderingId: types.maybe(types.number),
-    orgId: types.maybe(OrganizationInfo),
-    phone: types.optional(types.array(Contact), []),
-    email: types.optional(types.array(Contact), []),
-    pictureId: types.maybe(Picture),
+    organizationInfo: types.maybe(OrganizationInfo),
+    phones: types.optional(types.array(Contact), []),
+    emails: types.optional(types.array(Contact), []),
+    pictureId: types.maybe(types.string),
     incompleteData: false
   })
   .views(self => ({
@@ -68,30 +53,22 @@ const Person = types
       return this.store.peopleList.pendingDelete;
     },
     get primaryPhone() {
-      return getPrimaryContact(self.phone);
+      return getPrimaryContact(self.phones);
     },
     get primaryEmail() {
-      return getPrimaryContact(self.email);
+      return getPrimaryContact(self.emails);
     },
     get additionalEmails() {
-      return getAdditionalContacts(self.email);
+      return getAdditionalContacts(self.emails);
     },
     get additionalPhones() {
-      return getAdditionalContacts(self.phone);
+      return getAdditionalContacts(self.phones);
     },
     get organization(): string {
-      return (self.orgId && self.orgId.name) || "";
+      return (self.organizationInfo && self.organizationInfo.name) || "";
     },
     get location(): string {
-      return (self.orgId && self.orgId.address) || "";
-    },
-    get smallAvatar() {
-      if (!self.pictureId) return undefined;
-      return self.pictureId.pictures["128"];
-    },
-    get largeAvatar() {
-      if (!self.pictureId) return undefined;
-      return self.pictureId.pictures["512"];
+      return (self.organizationInfo && self.organizationInfo.address) || "";
     },
     get searchQuery(): string {
       return this.store.peopleList.searchQuery;
@@ -107,7 +84,7 @@ const Person = types
       if (response && response.ok) {
         const json = yield response.json();
         const { data } = formatKeys(json);
-        return renameCustomKeysFromApi(data, customKeys);
+        return data;
       }
     });
     const updateSelf = (snapshot: IPersonSnapshotIn) => {
@@ -149,8 +126,6 @@ export interface IPersonDumb extends IPersonSnapshotIn {
   organization?: string;
   location?: string;
   primaryEmail?: string;
-  smallAvatar?: string;
-  largeAvatar?: string;
   setSelected: () => void;
   searchQuery?: string;
   validSearch?: boolean;

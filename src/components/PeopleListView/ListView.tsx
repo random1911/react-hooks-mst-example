@@ -27,6 +27,8 @@ interface IProps {
   list: IPersonDumb[];
   onDragEnd: (sourceIndex: number, destinationIndex: number) => void;
   onAddClick: () => void;
+  clearWholeList: () => void;
+  restoreDefaultData: () => void;
   addLabel: string;
   isSearchMode?: boolean;
 }
@@ -42,7 +44,7 @@ const List: FC<IList> = observer(({ list }) => {
       id,
       organization,
       setSelected,
-      smallAvatar,
+      pictureId,
       searchQuery,
       validSearch
     }: IPersonDumb,
@@ -55,7 +57,7 @@ const List: FC<IList> = observer(({ list }) => {
       name={name}
       organization={organization}
       setSelected={setSelected}
-      imageUrl={smallAvatar}
+      imageUrl={pictureId}
       searchQuery={searchQuery}
       validSearch={validSearch}
     />
@@ -79,7 +81,9 @@ export const ListView: FC<IProps & IPaginationProps & IToolbarSearchProps> = ({
   searchQuery,
   onSearchClear,
   onSearchInputChange,
-  isSearchMode
+  isSearchMode,
+  clearWholeList,
+  restoreDefaultData
 }) => {
   const handleDragEnd = ({ destination, source }: DropResult) => {
     if (!destination) return;
@@ -106,6 +110,22 @@ export const ListView: FC<IProps & IPaginationProps & IToolbarSearchProps> = ({
             onSearchClear={onSearchClear}
             searchQuery={searchQuery}
           />
+          <Button
+            collapsible
+            icon="delete"
+            disabled={isLoadingList}
+            onClick={clearWholeList}
+          >
+            Clear all
+          </Button>
+          <Button
+            collapsible
+            icon="restore"
+            disabled={isLoadingList}
+            onClick={restoreDefaultData}
+          >
+            Restore defaults
+          </Button>
         </div>
         <div className="toolbar__right">
           {!isSearchMode && (

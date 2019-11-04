@@ -1,11 +1,13 @@
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-export const dashToCamel = (str: string) =>
-  str
+export const dashToCamel = (str: string) => {
+  if (str[0] === "_") return str;
+  return str
     .split("_")
     .map((part, i) => (i === 0 ? part : capitalize(part)))
     .join("");
+};
 
 export const camelToDash = (str: string) =>
   str.replace(/([A-Z])/g, g => {
@@ -21,14 +23,18 @@ export const formatKeys = (data: any, getFromApi: boolean = true): any => {
     return data;
 
   Object.keys(data).forEach(key => {
-    const destKey = getFromApi ? dashToCamel(key) : camelToDash(key);
-    value = data[key];
-    if (Array.isArray(value)) {
-      value = value.map(item => formatKeys(item, getFromApi));
-    } else if (typeof value === "object" && value !== null) {
-      value = formatKeys(value, getFromApi);
+    try {
+      const destKey = getFromApi ? dashToCamel(key) : camelToDash(key);
+      value = data[key];
+      if (Array.isArray(value)) {
+        value = value.map(item => formatKeys(item, getFromApi));
+      } else if (typeof value === "object" && value !== null) {
+        value = formatKeys(value, getFromApi);
+      }
+      build[destKey] = value === null ? undefined : value;
+    } catch (e) {
+      console.error(e, data);
     }
-    build[destKey] = value === null ? undefined : value;
   });
 
   return build;

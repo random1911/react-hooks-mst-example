@@ -9,15 +9,10 @@ import {
   types
 } from "mobx-state-tree";
 import { PERSON_DETAILS_MODAL_ID } from "../components/PersonDetailsModal/PersonDetailsModal";
-import {
-  formatKeys,
-  searchStringIgnoreCase,
-  renameCustomKeysFromApi,
-  renameCustomKeysToApi
-} from "../utils";
+import { formatKeys, searchStringIgnoreCase } from "../utils";
 import { EDIT_PERSON_MODAL_ID } from "../components/EditPersonModal/EditPersonModal";
 import { IStore } from "./main";
-import Person, { customKeys, IPerson, IPersonSnapshotIn } from "./Person";
+import Person, { IPerson, IPersonSnapshotIn } from "./Person";
 import Pagination from "./Pagination";
 import EditPerson, {
   IContactValues,
@@ -31,7 +26,7 @@ import { IWarningModelSnapshotIn, WARNING_ACTIONS } from "./WarningModel";
 import { ChangeEvent } from "react";
 
 interface IPersonChangeProps {
-  id?: number;
+  id?: string;
   isEdit: boolean;
   body: IPersonRequestBody;
 }
@@ -125,11 +120,18 @@ const PeopleList = types
         searchStringIgnoreCase(self.searchQuery, item.name)
       );
     },
-    get itemsByQueryIds(): number[] {
+    get itemsByQueryIds(): string[] {
       return this.allItemsByQuery.map(item => item.id);
     },
     get totalSearchResult(): IPerson[] {
       return [...this.allItemsByQuery, ...self.searchResult];
+    },
+    get canFillCurrentFragment(): boolean {
+      return (
+        !self.pagination.onTheLastPage &&
+        !this.haveValidSearch &&
+        self.pagination.currentMaxCount < self.totalCount
+      );
     }
   }))
   .actions(self => {
@@ -138,33 +140,14 @@ const PeopleList = types
     let handleSearchTimeout: number | null = null;
 
     // total count
-    const getTotalCount = flow(function*() {
-      const endpoint = "/persons/summary";
-      try {
-        const response = yield apiRequest({ endpoint });
-        if (response && response.ok) {
-          const json = yield response.json();
-          const data = formatKeys(json.data);
-          return data;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
     const setTotalCount = (count: number) => {
       self.totalCount = count;
     };
-    const updateTotalCount = flow(function*() {
-      const res = yield getTotalCount();
-      if (!res) return;
-      setTotalCount(res.totalCount);
-    });
 
     // detail dialog related stuff
-    const setSelectedPerson = (id: number) => {
+    const setSelectedPerson = (id: string) => {
       try {
-        // normally identifiers in a MobxStateTree is a strings
-        // @ts-ignore
+        // @ts-ignore MST design issue
         self.selectedPerson = id;
       } catch (e) {
         console.error(e);
@@ -176,7 +159,7 @@ const PeopleList = types
     const clearSelectedPerson = () => {
       self.selectedPerson = undefined;
     };
-    const showPersonDetails = (id: number) => {
+    const showPersonDetails = (id: string) => {
       setSelectedPerson(id);
       self.store.ui.openModal(PERSON_DETAILS_MODAL_ID);
     };
@@ -213,14 +196,14 @@ const PeopleList = types
       }
     };
     const getListData = flow(function*(
-      start: number = 0,
+      from: number = 0,
       limit: number = self.pagination.limit
     ): any {
       getListController && getListController.abort();
       getListController = AbortController && new AbortController();
       const endpoint = "/persons";
       try {
-        const params = { sort: customKeys.orderingId, start, limit };
+        const params = { from, limit };
         const response = yield apiRequest({
           endpoint,
           params,
@@ -228,11 +211,7 @@ const PeopleList = types
         });
         if (response && response.ok) {
           const json = yield response.json();
-          const { data } = formatKeys(json);
-          const formattedData = data.map((item: any) =>
-            renameCustomKeysFromApi(item, customKeys)
-          );
-          return formattedData;
+          return formatKeys(json);
         }
       } catch (e) {
         if (e.code !== 20) {
@@ -243,14 +222,16 @@ const PeopleList = types
       }
     });
     const getList = flow(function*(
-      start: number = 0,
+      from: number = 0,
       limit: number = self.pagination.limit
     ) {
       setLoadingListState(true);
-      const listData = yield getListData(start, limit);
+      const listData = yield getListData(from, limit);
       setLoadingListState(false);
       if (!listData) return;
-      addListCache(listData);
+      const { persons, count } = listData;
+      setTotalCount(count);
+      addListCache(persons);
     });
     const clearNextPages = () => {
       const pagesToSave = self.cache.filter(
@@ -267,9 +248,9 @@ const PeopleList = types
 
     // drag and drop
 
-    const sendReorderRequest = (personId: number, newOrder: number) => {
+    const sendReorderRequest = (personId: string, newOrder: number) => {
       const endpoint = `/persons/${personId}`;
-      const body = { [customKeys.orderingId]: newOrder };
+      const body = { orderingId: newOrder };
       return apiRequest({ endpoint, method: "PUT", body });
     };
     const onDragEnd = (sourceIndex: number, destinationIndex: number) => {
@@ -321,7 +302,7 @@ const PeopleList = types
     // edit / add / delete person actions
 
     const changeSinglePersonInList = (
-      id: number,
+      id: string,
       snapshot: IPersonSnapshotIn
     ) => {
       const person = self.list.find(person => person.id === id);
@@ -334,7 +315,7 @@ const PeopleList = types
     };
     const addSinglePersonToList = (person: IPersonSnapshotIn) => {
       try {
-        if (!self.currentListFragment) return;
+        if (!self.currentListFragment || !person) return;
         const newList = [...self.currentListFragment.content, person];
         applySnapshot(self.currentListFragment.content, newList);
       } catch (e) {
@@ -342,15 +323,15 @@ const PeopleList = types
       }
     };
     const getSinglePerson = flow(function*() {
-      const start = self.pagination.currentStartIndex + self.list.length;
+      const from = self.pagination.currentStartIndex + self.list.length;
       setLoadingAdditionalItemsState(true);
-      const res = yield getListData(start, 1);
+      const res = yield getListData(from, 1);
       setLoadingAdditionalItemsState(false);
       if (!res) {
         return;
       }
       try {
-        addSinglePersonToList(res[0]);
+        addSinglePersonToList(res.persons[0]);
       } catch (e) {
         console.error(e);
       }
@@ -362,8 +343,7 @@ const PeopleList = types
     }: IPersonChangeProps) {
       const method = isEdit ? "PUT" : "POST";
       const endpoint = isEdit ? `/persons/${id}` : "/persons";
-      const renamedBody = renameCustomKeysToApi(body, customKeys);
-      const formattedBody = formatKeys(renamedBody, false);
+      const formattedBody = formatKeys(body, false);
       return yield apiRequest({ endpoint, method, body: formattedBody });
     });
     const setEditPersonModel = (isEditMode: boolean) => {
@@ -379,8 +359,10 @@ const PeopleList = types
         orderingId,
         groups,
         id,
+        emails,
+        phones,
         assistant,
-        orgId
+        organizationInfo
       } = self.selectedPerson;
       const snap: IEditPersonSnapshotIn = {
         isEditMode: true,
@@ -388,8 +370,8 @@ const PeopleList = types
         caption: `Edit person: ${name}`,
         orderingId
       };
-      if (orgId && orgId.value) {
-        snap.organization = `${orgId.value}`;
+      if (organizationInfo && organizationInfo.id) {
+        snap.organization = `${organizationInfo.id}`;
       }
       self.editPerson = snap as IEditPerson;
       const values: IEditPersonValues = {
@@ -398,10 +380,14 @@ const PeopleList = types
         assistant
       };
       self.editPerson.setValues(values);
-      const email = getSnapshot(self.selectedPerson.email);
-      self.editPerson.setEmails(email as IContactValues[]);
-      const phone = getSnapshot(self.selectedPerson.phone);
-      self.editPerson.setPhones(phone as IContactValues[]);
+      if (emails.length) {
+        const email = getSnapshot(emails);
+        self.editPerson.setEmails(email as IContactValues[]);
+      }
+      if (phones.length) {
+        const phone = getSnapshot(phones);
+        self.editPerson.setPhones(phone as IContactValues[]);
+      }
     };
     const openEditPersonModal = (isEditMode: boolean = false) => {
       setEditPersonModel(isEditMode);
@@ -414,7 +400,7 @@ const PeopleList = types
     const setPendingDelete = (status: boolean) => {
       self.pendingDelete = status;
     };
-    const sendDeletePersonRequest = (personId: number) => {
+    const sendDeletePersonRequest = (personId: string) => {
       const endpoint = `/persons/${personId}`;
       return apiRequest({ endpoint, method: "DELETE" });
     };
@@ -447,13 +433,13 @@ const PeopleList = types
       } else {
         if (
           self.currentListFragment &&
-          self.currentListFragment.content.length > 1
+          self.currentListFragment.content.length
         ) {
           const filtered = self.currentListFragment.content.filter(
             item => item.id !== id
           );
           self.currentListFragment.updateList(filtered);
-          if (!self.pagination.onTheLastPage && !self.haveValidSearch) {
+          if (self.canFillCurrentFragment) {
             getSinglePerson();
           }
           clearNextPages();
@@ -477,9 +463,8 @@ const PeopleList = types
       }
       try {
         const json = yield response.json();
-        const data = formatKeys(json.data);
-        const formattedData = renameCustomKeysFromApi(data, customKeys);
-        changeSinglePersonInList(id, formattedData);
+        const data = formatKeys(json);
+        changeSinglePersonInList(id, data);
         self.store.ui.addSuccessNotification("Person changed");
         closeEditPersonModal();
       } catch (e) {
@@ -500,10 +485,9 @@ const PeopleList = types
       }
       try {
         const json = yield response.json();
-        const data = formatKeys(json.data);
-        const formattedData = renameCustomKeysFromApi(data, customKeys);
+        const data = formatKeys(json);
         if (self.shouldAddToEnd) {
-          addSinglePersonToList(formattedData);
+          addSinglePersonToList(data);
           setTotalCount(self.totalCount + 1);
         } else {
           setTotalCount(self.totalCount + 1);
@@ -523,19 +507,17 @@ const PeopleList = types
     const convertSearchResultToPerson = (
       searchResultObject: any
     ): IPersonSnapshotIn => {
+      // TODO: do something
       const { id, name, orgName, picture } = searchResultObject;
       const mapped: IPersonSnapshotIn = {
         id,
         name,
-        orgId: orgName
+        organizationInfo: orgName
           ? {
               name: orgName
             }
           : undefined,
-        pictureId:
-          picture && picture.url
-            ? { pictures: { "512": picture.url, "128": picture.url } }
-            : undefined,
+        pictureId: picture,
         incompleteData: true
       };
       return mapped;
@@ -587,9 +569,45 @@ const PeopleList = types
       setSearchResults([]);
     };
 
+    const requestClearList = flow(function*() {
+      const endpoint = `/delete-all-persons`;
+      return yield apiRequest({ endpoint, method: "DELETE" });
+    });
+
+    const reloadList = flow(function*() {
+      setCache([]);
+      yield getList();
+    });
+
+    const clearWholeList = flow(function*() {
+      setLoadingListState(true);
+      const result = yield requestClearList();
+      if (!result.ok) {
+        setLoadingListState(false);
+        self.store.ui.addErrorNotification("Unable to clear list");
+        return;
+      }
+      yield reloadList();
+    });
+
+    const requestRestoreDefault = flow(function*() {
+      const endpoint = `/restore-default-data`;
+      return yield apiRequest({ endpoint, method: "POST" });
+    });
+
+    const restoreDefaultData = flow(function*() {
+      setLoadingListState(true);
+      const result = yield requestRestoreDefault();
+      if (!result.ok) {
+        setLoadingListState(false);
+        self.store.ui.addErrorNotification("Unable to restore default data");
+        return;
+      }
+      yield reloadList();
+    });
+
     // life-cycle hook
     const afterAttach = () => {
-      updateTotalCount();
       getList();
     };
 
@@ -620,7 +638,9 @@ const PeopleList = types
         handleSearchTimeout = window.setTimeout(() => {
           this.performSearch();
         }, 200);
-      }
+      },
+      clearWholeList,
+      restoreDefaultData
     };
   });
 

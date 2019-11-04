@@ -8,19 +8,19 @@ I've completed the task with all additional challenges. Task completion was appr
 
 To not feel very sorry about totally wasting a lot of time and energy, I keep result here as a code example. To don't let someone use my code as own solution of the same task, I cut out mentioning of a company, rewrite task description and changed colors to hide company identity a bit.
 
+##Demo
+
+See Github pages [random1911.github.io/react-hooks-mst-example](https://random1911.github.io/react-hooks-mst-example/)
+
 ## Project details
 
 This app based on [Create React App](https://github.com/facebook/create-react-app) because it already includes React, Typescript and SASS and super easy to start.
 
-### Can I run the project?
+Original API has a limited trial period and cannot be used now, so currently work in progress on [own API implementation](https://github.com/random1911/express-mongoose-api).
 
-Yes, but without connection to API it is pointless. 
+Not all features are currently available.
 
-Original API has a limited trial period and cannot be used now anyway.
-
-Currently I work on [own API implementation](https://github.com/random1911/express-mongoose-api) to make seen UX in action, but it will take some time.
-
-If you still want to run this app, follow these steps:
+### To run the project?
 
 * `npm i` or `yarn`
 
@@ -36,6 +36,8 @@ The base part of the task was to create a SPA what can show the list of persons 
 
 Also was provided CSV with data you can export to API and some design mocks.
 
+Original data can be restored via press restore defaults button
+
 ### General implementation details
 
 * React Functional components for the views
@@ -45,17 +47,7 @@ Also was provided CSV with data you can export to API and some design mocks.
 * DND works via [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) because of its widely used and accessible library
 * Validation in add/edit form works via [validatorjs](https://github.com/skaterdav85/validatorjs)
 
-In the task, I had to use custom fields in API. It was user-defined DB records which gets identifiers automatically.
-To use that data, custom fields were converted in human-readable format after getting from API and transforms back into cat-on-keyboard format before sending API requests.
-The map was:
-
-```
-customKeys: any = {
-  assistant: "e84ab1fc4ad4dd171c97287b2ad84ffe58baca1b",
-  groups: "7ec8f8dbc0d0c618cbfda94eb39b49b788357f32",
-  orderingId: "903f7c14f57c1095f7909192941f221f79cd3d71"
-};
-```
+In original API, I was have to use custom fields for API with mapping like `assistant: "e84ab1fc4ad4dd171c97287b2ad84ffe58baca1b"`. With own API implementation I just use normal keys both at front- and backend
 
 Actions like a delete/add/change persons shows status messages (success or error) in the top-right screen corner.
 
@@ -75,17 +67,25 @@ Also if it would be a real app, we will need to have a bigger size of form contr
 
 The tricky part was about bonus challenges.
 
+- [ ] Save ordering via drag and drop (TODO in [API](https://github.com/random1911/express-mongoose-api))
+
 The first challenge was to save items order at the server after dragging items.
 
 That company currently don't have API methods to do it elegant way - so the solution was to update all items from range by a single query for each item because even edit multiple entries with different data currently impossible (only multiple items with same data).
 
 The best solution can be something like send to API first and the last ID of affected range and change ordering indexes on the back end.
 
+- [x] Create / Edit person
+
 The second challenge was to make a form to create a new person. I did more and made also edit mode for existing entries. To this form I added validation feature - real application have an only non-empty check on required field, but let you enter any data to email and phone fields.
 
 Another UX improvement -  if you are changed some fields and trying to close edit modal without saving, confirm modal will be shown.
 
+- [x] Delete person
+
 The third additional challenge was the button allows deleting person. It was the simplest challenge. I also added confirm modal to prevent accidental deletion.
+
+- [x] Add pagination
 
 Forth challenge was to add pagination. To do this, data was loaded and stored in the app state by fragments.
  
@@ -96,6 +96,8 @@ If you are deleted the entry and you are not in the last page, an additional ite
 Also deleting entry will remove all next pages from the cache. 
 
 If you are on the last page and you have deleted all entries, you will go to the previous page.
+
+- [ ] Add search filter (TODO in [API](https://github.com/random1911/express-mongoose-api))
 
 And the last challenge was to add a search filter. 
 

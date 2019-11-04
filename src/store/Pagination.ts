@@ -16,13 +16,20 @@ const Pagination = types
       return this.peopleList.totalCount;
     },
     get pagesCount(): number {
+      if (this.total === 0) return 1;
       return Math.ceil(this.total / self.limit);
     },
     get currentStartIndex(): number {
       return (self.currentPage - 1) * self.limit;
     },
+    get onTheFirstPage(): boolean {
+      return self.currentPage === 0;
+    },
     get onTheLastPage(): boolean {
       return self.currentPage === this.pagesCount;
+    },
+    get currentMaxCount(): number {
+      return self.currentPage * self.limit;
     }
   }))
   .actions(self => {

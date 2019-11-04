@@ -11,6 +11,7 @@ interface IProps {
   title?: string;
   isPending?: boolean;
   primary?: boolean;
+  collapsible?: boolean;
 }
 
 const Button: FC<IProps> = ({
@@ -21,7 +22,8 @@ const Button: FC<IProps> = ({
   isPending,
   disabled,
   children,
-  title
+  title,
+  collapsible
 }) => {
   const onlyIcon = icon && !children;
   const handleClick = () => {
@@ -33,7 +35,12 @@ const Button: FC<IProps> = ({
       onClick={handleClick}
       title={title}
       disabled={disabled || isPending}
-      className={getBemClassName("button", { isPending, primary, onlyIcon })}
+      className={getBemClassName("button", {
+        isPending,
+        primary,
+        onlyIcon,
+        collapsible
+      })}
     >
       {icon && (
         <span role="img" className={`button__icon button__icon_${icon}`} />

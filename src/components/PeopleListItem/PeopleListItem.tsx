@@ -11,7 +11,7 @@ import Avatar from "../Avatar/Avatar";
 import MatchedSearch from "../MatchedSearch/MatchedSearch";
 
 export interface IPeopleListItem {
-  id: number;
+  id: string;
   index: number;
   name: string;
   imageUrl?: string;

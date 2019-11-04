@@ -10,7 +10,7 @@ import apiRequest from "./apiRequest";
 import { IOption } from "../components/Dropdown/Dropdown";
 
 const Organization = types.model("OrganizationModel", {
-  id: types.identifierNumber,
+  id: types.identifier,
   name: types.string
 });
 
@@ -54,7 +54,7 @@ const OrganizationsList = types
           return;
         }
         const json = yield response.json();
-        const data = formatKeys(json.data);
+        const data = formatKeys(json);
         setList(data);
       } catch (e) {
         console.error(e);
