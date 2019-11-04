@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/react-hooks-mst-example/static/css/main.061415fe.chunk.css",
+    "main.js": "/react-hooks-mst-example/static/js/main.3cc71dcf.chunk.js",
+    "main.js.map": "/react-hooks-mst-example/static/js/main.3cc71dcf.chunk.js.map",
+    "runtime~main.js": "/react-hooks-mst-example/static/js/runtime~main.123cb3f8.js",
+    "runtime~main.js.map": "/react-hooks-mst-example/static/js/runtime~main.123cb3f8.js.map",
+    "static/js/2.517849e6.chunk.js": "/react-hooks-mst-example/static/js/2.517849e6.chunk.js",
+    "static/js/2.517849e6.chunk.js.map": "/react-hooks-mst-example/static/js/2.517849e6.chunk.js.map",
+    "index.html": "/react-hooks-mst-example/index.html",
+    "precache-manifest.44308f961821ee4af3a3e2e829bac0cc.js": "/react-hooks-mst-example/precache-manifest.44308f961821ee4af3a3e2e829bac0cc.js",
+    "service-worker.js": "/react-hooks-mst-example/service-worker.js",
+    "static/css/main.061415fe.chunk.css.map": "/react-hooks-mst-example/static/css/main.061415fe.chunk.css.map",
+    "static/media/header.scss": "/react-hooks-mst-example/static/media/logo.3bf9b28c.svg",
+    "static/media/peoplelistItem.scss": "/react-hooks-mst-example/static/media/oranization-icon.d0ec2a1e.svg",
+    "static/media/button.scss": "/react-hooks-mst-example/static/media/trash-bin.a8a928f3.svg",
+    "static/media/toolbarSearch.scss": "/react-hooks-mst-example/static/media/search.03849a80.svg"
+  }
+}
