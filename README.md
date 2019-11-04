@@ -8,6 +8,10 @@ I've completed the task with all additional challenges. Task completion was appr
 
 To not feel very sorry about totally wasting a lot of time and energy, I keep result here as a code example. To don't let someone use my code as own solution of the same task, I cut out mentioning of a company, rewrite task description and changed colors to hide company identity a bit.
 
+##Demo
+
+See Github pages [random1911.github.io/react-hooks-mst-example](https://random1911.github.io/react-hooks-mst-example/)
+
 ## Project details
 
 This app based on [Create React App](https://github.com/facebook/create-react-app) because it already includes React, Typescript and SASS and super easy to start.
@@ -31,6 +35,8 @@ Not all features are currently available.
 The base part of the task was to create a SPA what can show the list of persons gets from company API. By click on the list item, modal windows with detailed data must be shown. Items were must have the possibility to be reordered via drag and drop. 
 
 Also was provided CSV with data you can export to API and some design mocks.
+
+Original data can be restored via press restore defaults button
 
 ### General implementation details
 
