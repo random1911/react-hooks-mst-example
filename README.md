@@ -8,7 +8,7 @@ I've completed the task with all additional challenges. Task completion was appr
 
 To not feel very sorry about totally wasting a lot of time and energy, I keep result here as a code example. To don't let someone use my code as own solution of the same task, I cut out mentioning of a company, rewrite task description and changed colors to hide company identity a bit.
 
-##Demo
+## Demo
 
 See Github pages [random1911.github.io/react-hooks-mst-example](https://random1911.github.io/react-hooks-mst-example/)
 
