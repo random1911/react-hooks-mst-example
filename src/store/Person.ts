@@ -42,7 +42,7 @@ const Person = types
     organizationInfo: types.maybe(OrganizationInfo),
     phones: types.optional(types.array(Contact), []),
     emails: types.optional(types.array(Contact), []),
-    pictureId: types.maybe(types.string),
+    pictureUrl: types.maybe(types.string),
     incompleteData: false
   })
   .views(self => ({

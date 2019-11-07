@@ -97,7 +97,7 @@ Also deleting entry will remove all next pages from the cache.
 
 If you are on the last page and you have deleted all entries, you will go to the previous page.
 
-- [ ] Add search filter (TODO in [API](https://github.com/random1911/express-mongoose-api))
+- [x] Add search filter
 
 And the last challenge was to add a search filter. 
 
@@ -106,6 +106,8 @@ Implementation limitation: drag and drop and pagination are not allowed on searc
 Search query is debounced by [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) and timeout to do not send too many requests.
 
 First will be shown items found in the local cache, then items from the server.
+
+Try "Smith" query, I've prepared some famous Smiths for you.
 
 If items will have text matched with search string without spaces matched fragments will be highlighted.
 
