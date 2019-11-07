@@ -504,24 +504,6 @@ const PeopleList = types
     });
 
     // search
-    const convertSearchResultToPerson = (
-      searchResultObject: any
-    ): IPersonSnapshotIn => {
-      // TODO: do something
-      const { id, name, orgName, picture } = searchResultObject;
-      const mapped: IPersonSnapshotIn = {
-        id,
-        name,
-        organizationInfo: orgName
-          ? {
-              name: orgName
-            }
-          : undefined,
-        pictureId: picture,
-        incompleteData: true
-      };
-      return mapped;
-    };
     const setSearchResults = (result: IPersonSnapshotIn[]) => {
       const onlyNewItems = result.filter(
         item => !self.itemsByQueryIds.includes(item.id)
@@ -537,8 +519,8 @@ const PeopleList = types
       searchListController = AbortController && new AbortController();
       const endpoint = "/persons/find";
       const params = {
-        term: self.searchQuery,
-        start: 0,
+        name: self.searchQuery,
+        skip: 0,
         limit: 500
       };
       try {
@@ -549,10 +531,7 @@ const PeopleList = types
         });
         if (response.ok) {
           const json = yield response.json();
-          const { data } = formatKeys(json);
-          if (data && Array.isArray(data)) {
-            return data.map(convertSearchResultToPerson);
-          }
+          return formatKeys(json);
         }
       } catch (e) {
         if (e.code !== 20) {
@@ -576,6 +555,7 @@ const PeopleList = types
 
     const reloadList = flow(function*() {
       setCache([]);
+      setSearchResults([]);
       yield getList();
     });
 
