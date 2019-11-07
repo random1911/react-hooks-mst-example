@@ -44,7 +44,7 @@ const List: FC<IList> = observer(({ list }) => {
       id,
       organization,
       setSelected,
-      pictureId,
+      pictureUrl,
       searchQuery,
       validSearch
     }: IPersonDumb,
@@ -57,7 +57,7 @@ const List: FC<IList> = observer(({ list }) => {
       name={name}
       organization={organization}
       setSelected={setSelected}
-      imageUrl={pictureId}
+      imageUrl={pictureUrl}
       searchQuery={searchQuery}
       validSearch={validSearch}
     />
