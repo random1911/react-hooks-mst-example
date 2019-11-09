@@ -10,7 +10,7 @@ To not feel very sorry about totally wasting a lot of time and energy, I keep re
 
 ## Demo
 
-See Github pages [random1911.github.io/react-hooks-mst-example](https://random1911.github.io/react-hooks-mst-example/)
+See [react-hooks-mst-example.firebaseapp.com](https://react-hooks-mst-example.firebaseapp.com/)
 
 ## Project details
 
