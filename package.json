@@ -2,7 +2,6 @@
   "name": "react-hooks-mst-example",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://random1911.github.io/react-hooks-mst-example/",
   "dependencies": {
     "mobx": "^5.13.0",
     "mobx-react": "^6.1.1",
@@ -20,7 +19,6 @@
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "16.8.5",
     "@types/validatorjs": "^3.15.0",
-    "gh-pages": "^2.1.1",
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "react-scripts": "3.0.1",
@@ -32,7 +30,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
