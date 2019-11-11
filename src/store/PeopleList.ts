@@ -554,8 +554,8 @@ const PeopleList = types
     });
 
     const reloadList = flow(function*() {
+      clearSearchQuery();
       setCache([]);
-      setSearchResults([]);
       yield getList();
     });
 
